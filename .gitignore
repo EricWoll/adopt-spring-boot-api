@@ -31,7 +31,6 @@ build/
 
 ### Code Editors ###
 .vscode/
-.idea/
 
 ### ENV FILE ###
 .env
