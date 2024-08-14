@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface RecordRepository extends MongoRepository<Record, ObjectId> {
 
     Optional<Record> findRecordByadoptionId(String adoptionId);
+
+    Optional<Record> deleteByadoptionId(String adoptionId);
+
 }

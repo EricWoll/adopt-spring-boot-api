@@ -28,7 +28,10 @@ public class RecordService {
             boolean adoptionComplete,
             String adoptionDate
     ) {
-
         return recordRepository.insert(new Record(adoptionId, animalId, householdId, adoptionComplete, adoptionDate));
+    }
+
+    public Optional<Record> deleteRecord(String adoptionId) {
+        return recordRepository.deleteByadoptionId(adoptionId);
     }
 }
