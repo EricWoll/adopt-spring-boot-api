@@ -1,17 +1,18 @@
 package com.adopt.adopt.Records;
 
+import com.adopt.adopt.Exceptions.ApiDeleteException;
+import com.adopt.adopt.Exceptions.ApiGetException;
+import com.adopt.adopt.Exceptions.ApiPostException;
+import com.adopt.adopt.Exceptions.ApiPutException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.apache.logging.log4j.ThreadContext.isEmpty;
 
 @RestController
 @RequestMapping("api/v1/records")
@@ -29,26 +30,67 @@ public class RecordController {
     }
 
     @GetMapping("/{adoptionId}")
-    public ResponseEntity<Optional<Record>> getSingleRecord(@PathVariable String adoptionId) {
-        return new ResponseEntity<Optional<Record>>(recordService.singleRecord(adoptionId), HttpStatus.OK);
+    public ResponseEntity<Record> getSingleRecord(@PathVariable String adoptionId) {
+
+        if (!mongoTemplate.exists(
+                Query.query(Criteria.where("adoptionId").is(adoptionId)),Record.class))
+        {
+            throw new ApiGetException("Adoption Record Does Not Exists!");
+        }
+
+        return new ResponseEntity<Record>(recordService.singleRecord(adoptionId), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Record> createRecord(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Record> createRecord(@RequestBody Record payload) {
+
+        if (mongoTemplate.exists(
+                Query.query(Criteria.where("adoptionId").is(payload.getAdoptionId())),Record.class))
+        {
+            throw new ApiPostException("Adoption Record Already Exists!");
+        }
 
         return new ResponseEntity<Record>(recordService.createRecord(
-                payload.get("adoptionId"),
-                payload.get("animalId"),
-                payload.get("householdId"),
-                Boolean.parseBoolean(payload.get("adoptionComplete")),
-                payload.get("adoptionDate")
+                payload.getAdoptionId(),
+                payload.getAnimalId(),
+                payload.getHouseholdId(),
+                payload.isAdoptionComplete(),
+                payload.getAdoptionDate()
         ), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{adoptionId}")
-    public ResponseEntity<Optional<Record>> deleteRecord(@PathVariable String adoptionId) {
+    @PutMapping("/{adoptionId}")
+    public ResponseEntity<Record> updateRecord(
+            @PathVariable String adoptionId,
+            @RequestBody Record payload
+    ) {
 
-        return new ResponseEntity<Optional<Record>>(recordService.deleteRecord(adoptionId), HttpStatus.NO_CONTENT);
+        if (!mongoTemplate.exists(
+                Query.query(Criteria.where("adoptionId").is(adoptionId)), Record.class))
+        {
+            throw new ApiPutException("Adoption Record Already Exists!");
+        }
+
+        return new ResponseEntity<Record>(recordService.updateRecord(
+                adoptionId,
+                payload.getAnimalId(),
+                payload.getHouseholdId(),
+                payload.isAdoptionComplete(),
+                payload.getAdoptionDate()
+        ), HttpStatus.CREATED);
+
+    }
+
+    @DeleteMapping("/{adoptionId}")
+    public ResponseEntity<Record> deleteRecord(@PathVariable String adoptionId) {
+
+        if (!mongoTemplate.exists(
+                Query.query(Criteria.where("adoptionId").is(adoptionId)), Record.class))
+        {
+            throw new ApiDeleteException("Adoption Record Already Exists!");
+        }
+
+        return new ResponseEntity<Record>(recordService.deleteRecord(adoptionId), HttpStatus.NO_CONTENT);
     }
 
 }

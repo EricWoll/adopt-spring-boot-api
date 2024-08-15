@@ -3,9 +3,7 @@ package com.adopt.adopt.Records;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RecordService {
@@ -17,7 +15,7 @@ public class RecordService {
         return recordRepository.findAll();
     }
 
-    public Optional<Record> singleRecord(String adoptionId) {
+    public Record singleRecord(String adoptionId) {
         return recordRepository.findRecordByadoptionId(adoptionId);
     }
 
@@ -28,10 +26,37 @@ public class RecordService {
             boolean adoptionComplete,
             String adoptionDate
     ) {
-        return recordRepository.insert(new Record(adoptionId, animalId, householdId, adoptionComplete, adoptionDate));
+        return recordRepository.insert(
+                new Record(
+                        adoptionId,
+                        animalId,
+                        householdId,
+                        adoptionComplete,
+                        adoptionDate
+                )
+        );
     }
 
-    public Optional<Record> deleteRecord(String adoptionId) {
-        return recordRepository.deleteByadoptionId(adoptionId);
+    public Record updateRecord(
+            String adoptionId,
+            String animalId,
+            String householdId,
+            boolean adoptionComplete,
+            String adoptionDate
+    ) {
+        Record record = recordRepository.findRecordByadoptionId(adoptionId);
+
+        record.setAnimalId(animalId);
+        record.setHouseholdId(householdId);
+        record.setAdoptionComplete(adoptionComplete);
+        record.setAdoptionDate(adoptionDate);
+
+        recordRepository.save(record);
+
+        return record;
+    }
+
+    public Record deleteRecord(String adoptionId) {
+        return recordRepository.deleteRecordByadoptionId(adoptionId);
     }
 }
