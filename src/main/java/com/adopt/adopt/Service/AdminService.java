@@ -1,39 +1,28 @@
 package com.adopt.adopt.Service;
 
-import com.adopt.adopt.Exception.CustomExceptions.UserNotFoundException;
 import com.adopt.adopt.Exception.CustomExceptions.UserExistsException;
+import com.adopt.adopt.Exception.CustomExceptions.UserNotFoundException;
 import com.adopt.adopt.Model.ERole;
 import com.adopt.adopt.Model.User;
 import com.adopt.adopt.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
-
 @Service
-public class UserService {
+public class AdminService {
 
     @Autowired
     private UserRepo userRepo;
 
-    public List<User> findAll() {
-        return userRepo.findAll();
-    }
-
-    public User findOne(UUID userId) {
-        return userRepo.findByuserId(userId)
-                .orElseThrow(()-> new UserNotFoundException("User Does Not Exist!"));
-    }
-
-    // Inserts ERole.CUSTOMER
+    // Creates For All User Types
     public User createUser(
             String username,
             String email,
-            String password
+            String password,
+            ERole role
     ) {
-
         boolean foundName = userRepo.existsByusername(username);
         boolean foundEmail = userRepo.existsByemail(email);
 
@@ -46,16 +35,18 @@ public class UserService {
                         username,
                         email,
                         password,
-                        ERole.CUSTOMER
+                        role
                 )
         );
     }
 
+    // Updates For All User Types
     public User updateUser(
             UUID userId,
             String username,
             String email,
-            String password
+            String password,
+            ERole role
     ) {
         User user = userRepo.findByuserId(userId)
                 .orElseThrow(() -> new UserNotFoundException("User Does Not Exist!"));
@@ -63,18 +54,16 @@ public class UserService {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(password);
+        user.setRole(role);
 
         userRepo.save(user);
         return user;
     }
 
+    // Deletes For All User Types
     public User deleteUser(UUID userId) {
         User user = userRepo.findByuserId(userId)
                 .orElseThrow(()-> new UserNotFoundException("User Does Not Exist!"));
-
-        if (user.getRole() == ERole.ADMIN) {
-            throw new UserNotFoundException("User Does Not Exist!");
-        }
 
         userRepo.deleteByuserId(userId);
         return user;

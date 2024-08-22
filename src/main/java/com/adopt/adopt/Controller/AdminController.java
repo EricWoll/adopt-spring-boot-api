@@ -1,46 +1,29 @@
 package com.adopt.adopt.Controller;
 
 import com.adopt.adopt.Model.User;
-import com.adopt.adopt.Service.UserService;
+import com.adopt.adopt.Service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
-
 @RestController
-@RequestMapping("/api/v1/users")
-public class UserController {
+@RequestMapping("/api/v1/admin")
+public class AdminController {
 
     @Autowired
-    private UserService userService;
-
-    @GetMapping("/")
-    public ResponseEntity<List<User>> getAllUsers() {
-        return new ResponseEntity<List<User>>(
-                userService.findAll(),
-                HttpStatus.OK
-        );
-    }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<User> findSingleUser(@PathVariable UUID userId) {
-        return new ResponseEntity<User>(
-                userService.findOne(userId),
-                HttpStatus.OK
-        );
-    }
+    private AdminService adminService;
 
     @PostMapping("/")
     public ResponseEntity<User> createUser(@RequestBody User payload) {
         return new ResponseEntity<User>(
-                userService.createUser(
+                adminService.createUser(
                         payload.getUsername(),
                         payload.getEmail(),
-                        payload.getPassword()
+                        payload.getPassword(),
+                        payload.getRole()
                 ),
                 HttpStatus.CREATED
         );
@@ -52,11 +35,12 @@ public class UserController {
             @RequestBody User payload
     ) {
         return new ResponseEntity<User>(
-                userService.updateUser(
-                        payload.getUserId(),
+                adminService.updateUser(
+                        userId,
                         payload.getUsername(),
                         payload.getEmail(),
-                        payload.getPassword()
+                        payload.getPassword(),
+                        payload.getRole()
                 ),
                 HttpStatus.CREATED
         );
@@ -65,7 +49,7 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public ResponseEntity<User> deleteUser(@PathVariable UUID userId) {
         return new ResponseEntity<User>(
-                userService.deleteUser(userId),
+                adminService.deleteUser(userId),
                 HttpStatus.NO_CONTENT
         );
     }

@@ -30,11 +30,13 @@ public class User {
     @NotBlank
     @Size(min=8)
     private String password;
+    private ERole role;
 
     public User(
             String username,
             String email,
-            String password
+            String password,
+            ERole role
     ) {
         this.username = username;
         this.email = email;
