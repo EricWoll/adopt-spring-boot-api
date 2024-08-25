@@ -1,5 +1,7 @@
 package com.adopt.adopt.Controller;
 
+import com.adopt.adopt.Model.AdoptionRecord;
+import com.adopt.adopt.Model.Animal;
 import com.adopt.adopt.Model.User;
 import com.adopt.adopt.Service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping
+    @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User payload) {
         return new ResponseEntity<User>(
                 adminService.createUser(
@@ -27,7 +29,7 @@ public class AdminController {
         );
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/users/{userId}")
     public ResponseEntity<User> updateUser(
             @PathVariable String userId,
             @RequestBody User payload
@@ -44,11 +46,27 @@ public class AdminController {
         );
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/users/{userId}")
     public ResponseEntity<User> deleteUser(@PathVariable String userId) {
         return new ResponseEntity<User>(
                 adminService.deleteUser(userId),
                 HttpStatus.NO_CONTENT
+        );
+    }
+
+    @PutMapping("/adoption-records/{adoptionId}")
+    public ResponseEntity<AdoptionRecord> updateAdoptionRecord(
+            @PathVariable String adoptionId,
+            @RequestBody AdoptionRecord payload
+    ) {
+        return new ResponseEntity<AdoptionRecord>(
+                adminService.updateAdoptionRecord(
+                        adoptionId,
+                        payload.getAnimalId(),
+                        payload.getUserId(),
+                        payload.getAdoptionProcess()
+                ),
+                HttpStatus.CREATED
         );
     }
 }

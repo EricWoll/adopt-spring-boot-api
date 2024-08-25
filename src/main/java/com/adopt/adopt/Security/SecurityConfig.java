@@ -31,8 +31,6 @@ public class SecurityConfig {
                                     "/api/v1/adoption-records/*"
                             ).permitAll();
                             authHttp.requestMatchers(
-                                    "/api/v1/animals",
-                                    "/api/v1/animals/*",
                                     "/api/v1/users",
                                     "/api/v1/users/*",
                                     "/api/v1/adoption-records",

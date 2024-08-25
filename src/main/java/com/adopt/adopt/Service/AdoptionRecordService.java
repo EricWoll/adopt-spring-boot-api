@@ -38,8 +38,7 @@ public class AdoptionRecordService {
 
     public AdoptionRecord createAdoptionRecord(
             String animalId,
-            String userId,
-            EAdoptionProcess adoptionProcess
+            String userId
     ) {
         if (!animalRepo.existsByanimalId(animalId)) {
             throw new AnimalNotFoundException("Animal Record Not Found!");
@@ -58,7 +57,7 @@ public class AdoptionRecordService {
                 new AdoptionRecord(
                         animalId,
                         userId,
-                        adoptionProcess
+                        EAdoptionProcess.IN_PROGRESS
                 )
         );
     }
@@ -66,8 +65,7 @@ public class AdoptionRecordService {
     public AdoptionRecord updateAdoptionRecord(
             String adoptionId,
             String animalId,
-            String userId,
-            EAdoptionProcess adoptionProcess
+            String userId
     ) {
 
         animalRepo.findByanimalId(animalId)
@@ -81,7 +79,7 @@ public class AdoptionRecordService {
 
         adoptionRecord.setAnimalId(animalId);
         adoptionRecord.setUserId(userId);
-        adoptionRecord.setAdoptionProcess(adoptionProcess);
+        adoptionRecord.setAdoptionProcess(EAdoptionProcess.IN_PROGRESS);
 
         adoptionRecordRepo.save(adoptionRecord);
         return adoptionRecord;

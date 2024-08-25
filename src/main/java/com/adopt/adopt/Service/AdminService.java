@@ -1,9 +1,15 @@
 package com.adopt.adopt.Service;
 
+import com.adopt.adopt.Exception.CustomExceptions.AdoptionRecordNotFoundException;
+import com.adopt.adopt.Exception.CustomExceptions.AnimalNotFoundException;
 import com.adopt.adopt.Exception.CustomExceptions.UserExistsException;
 import com.adopt.adopt.Exception.CustomExceptions.UserNotFoundException;
+import com.adopt.adopt.Model.AdoptionRecord;
+import com.adopt.adopt.Model.EAdoptionProcess;
 import com.adopt.adopt.Model.ERole;
 import com.adopt.adopt.Model.User;
+import com.adopt.adopt.Repo.AdoptionRecordRepo;
+import com.adopt.adopt.Repo.AnimalRepo;
 import com.adopt.adopt.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +19,10 @@ public class AdminService {
 
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private AdoptionRecordRepo adoptionRecordRepo;
+    @Autowired
+    private AnimalRepo animalRepo;
 
     // Creates For All User Types
     public User createUser(
@@ -65,5 +75,29 @@ public class AdminService {
 
         userRepo.deleteByuserId(userId);
         return user;
+    }
+
+    public AdoptionRecord updateAdoptionRecord(
+            String adoptionId,
+            String animalId,
+            String userId,
+            EAdoptionProcess adoptionProcess
+    ) {
+
+        animalRepo.findByanimalId(animalId)
+                .orElseThrow(()-> new AnimalNotFoundException("Animal Record Not Found!"));
+
+        userRepo.findByuserId(userId)
+                .orElseThrow(()-> new UserNotFoundException("User Record Not Found!"));
+
+        AdoptionRecord adoptionRecord = adoptionRecordRepo.findByadoptionId(adoptionId)
+                .orElseThrow(()-> new AdoptionRecordNotFoundException("Adoption Record Does Not Exist!"));
+
+        adoptionRecord.setAnimalId(animalId);
+        adoptionRecord.setUserId(userId);
+        adoptionRecord.setAdoptionProcess(adoptionProcess);
+
+        adoptionRecordRepo.save(adoptionRecord);
+        return adoptionRecord;
     }
 }

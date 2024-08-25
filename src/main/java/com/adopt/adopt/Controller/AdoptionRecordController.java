@@ -37,8 +37,7 @@ public class AdoptionRecordController {
         return new ResponseEntity<AdoptionRecord>(
                 adoptionRecordService.createAdoptionRecord(
                         payload.getAnimalId(),
-                        payload.getUserId(),
-                        payload.getAdoptionProcess()
+                        payload.getUserId()
                 ),
                 HttpStatus.CREATED
         );
@@ -53,8 +52,7 @@ public class AdoptionRecordController {
                 adoptionRecordService.updateAdoptionRecord(
                         adoptionId,
                         payload.getAnimalId(),
-                        payload.getUserId(),
-                        payload.getAdoptionProcess()
+                        payload.getUserId()
                 ),
                 HttpStatus.CREATED
         );
