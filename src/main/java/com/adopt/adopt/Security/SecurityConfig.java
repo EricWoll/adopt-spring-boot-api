@@ -1,5 +1,6 @@
 package com.adopt.adopt.Security;
 
+import com.adopt.adopt.Model.ERole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,18 @@ public class SecurityConfig {
                                     "/api/v1/adoption-records",
                                     "/api/v1/adoption-records/*"
                             ).permitAll();
+                            authHttp.requestMatchers(
+                                    "/api/v1/animals",
+                                    "/api/v1/animals/*",
+                                    "/api/v1/users",
+                                    "/api/v1/users/*",
+                                    "/api/v1/adoption-records",
+                                    "/api/v1/adoption-records/*"
+                            ).hasAnyRole(ERole.CUSTOMER.getRole(), ERole.ADMIN.getRole());
+                            authHttp.requestMatchers(
+                                    "/api/v1/admin",
+                                    "/api/v1/admin/*"
+                            ).hasRole(ERole.ADMIN.getRole());
                             authHttp.anyRequest().authenticated();
                         }
                 )
