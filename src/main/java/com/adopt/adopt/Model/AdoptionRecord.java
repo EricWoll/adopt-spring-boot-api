@@ -1,33 +1,31 @@
 package com.adopt.adopt.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.UUID;
 
-@Entity(name = "Adoption Record")
 @Data
 @NoArgsConstructor
 @Document(collection = "adoption_records")
 public class AdoptionRecord {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID adoptionId;
-    private UUID animalId;
-    private UUID userId;
+    @MongoId
+    private ObjectId id;
+    private String adoptionId;
+    private String animalId;
+    private String userId;
     private EAdoptionProcess adoptionProcess;
 
     public AdoptionRecord(
-            UUID animalId,
-            UUID userId,
+            String animalId,
+            String userId,
             EAdoptionProcess adoptionProcess
     ) {
+        this.adoptionId = UUID.randomUUID().toString();
         this.animalId = animalId;
         this.userId = userId;
         this.adoptionProcess = adoptionProcess;

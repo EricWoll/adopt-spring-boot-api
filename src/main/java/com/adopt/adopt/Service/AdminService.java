@@ -8,8 +8,6 @@ import com.adopt.adopt.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 public class AdminService {
 
@@ -42,7 +40,7 @@ public class AdminService {
 
     // Updates For All User Types
     public User updateUser(
-            UUID userId,
+            String userId,
             String username,
             String email,
             String password,
@@ -61,7 +59,7 @@ public class AdminService {
     }
 
     // Deletes For All User Types
-    public User deleteUser(UUID userId) {
+    public User deleteUser(String userId) {
         User user = userRepo.findByuserId(userId)
                 .orElseThrow(()-> new UserNotFoundException("User Does Not Exist!"));
 

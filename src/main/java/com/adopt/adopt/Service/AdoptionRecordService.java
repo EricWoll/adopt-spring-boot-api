@@ -2,36 +2,52 @@ package com.adopt.adopt.Service;
 
 import com.adopt.adopt.Exception.CustomExceptions.AdoptionRecordExistsException;
 import com.adopt.adopt.Exception.CustomExceptions.AdoptionRecordNotFoundException;
+import com.adopt.adopt.Exception.CustomExceptions.AnimalNotFoundException;
+import com.adopt.adopt.Exception.CustomExceptions.UserNotFoundException;
 import com.adopt.adopt.Model.AdoptionRecord;
+import com.adopt.adopt.Model.Animal;
 import com.adopt.adopt.Model.EAdoptionProcess;
+import com.adopt.adopt.Model.User;
 import com.adopt.adopt.Repo.AdoptionRecordRepo;
+import com.adopt.adopt.Repo.AnimalRepo;
+import com.adopt.adopt.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AdoptionRecordService {
 
     @Autowired
     private AdoptionRecordRepo adoptionRecordRepo;
+    @Autowired
+    private AnimalRepo animalRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     public List<AdoptionRecord> findAll() {
         return adoptionRecordRepo.findAll();
     }
 
-    public AdoptionRecord findOne(UUID adoptionId) {
+    public AdoptionRecord findOne(String adoptionId) {
         return adoptionRecordRepo.findByadoptionId(adoptionId)
                 .orElseThrow(()-> new AdoptionRecordNotFoundException("Adoption Record Does Not Exist!"));
     }
 
     public AdoptionRecord createAdoptionRecord(
-            UUID animalId,
-            UUID userId,
+            String animalId,
+            String userId,
             EAdoptionProcess adoptionProcess
     ) {
+        if (!animalRepo.existsByanimalId(animalId)) {
+            throw new AnimalNotFoundException("Animal Record Not Found!");
+        }
+         if (!userRepo.existsByuserId(userId)) {
+                throw new UserNotFoundException("User Record Not Found!");
+         }
+
         Optional<AdoptionRecord> adoptionRecord = adoptionRecordRepo.findByanimalId(animalId);
 
         if (adoptionRecord.isPresent()) {
@@ -48,11 +64,18 @@ public class AdoptionRecordService {
     }
 
     public AdoptionRecord updateAdoptionRecord(
-            UUID adoptionId,
-            UUID animalId,
-            UUID userId,
+            String adoptionId,
+            String animalId,
+            String userId,
             EAdoptionProcess adoptionProcess
     ) {
+
+        animalRepo.findByanimalId(animalId)
+                .orElseThrow(()-> new AnimalNotFoundException("Animal Record Not Found!"));
+
+        userRepo.findByuserId(userId)
+                .orElseThrow(()-> new UserNotFoundException("User Record Not Found!"));
+
         AdoptionRecord adoptionRecord = adoptionRecordRepo.findByadoptionId(adoptionId)
                 .orElseThrow(()-> new AdoptionRecordNotFoundException("Adoption Record Does Not Exist!"));
 
@@ -64,7 +87,7 @@ public class AdoptionRecordService {
         return adoptionRecord;
     }
 
-    public AdoptionRecord deleteAdoptionRecord(UUID adoptionId) {
+    public AdoptionRecord deleteAdoptionRecord(String adoptionId) {
         AdoptionRecord adoptionRecord = adoptionRecordRepo.findByadoptionId(adoptionId)
                 .orElseThrow(()-> new AdoptionRecordNotFoundException("Adoption Record Does Not Exist!"));
 

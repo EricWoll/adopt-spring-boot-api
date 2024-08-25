@@ -5,16 +5,15 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface AdoptionRecordRepo extends MongoRepository<AdoptionRecord, String> {
 
-    Optional<AdoptionRecord> findByadoptionId(UUID adoptionId);
-    Optional<AdoptionRecord> findByanimalId(UUID animalId);
+    Optional<AdoptionRecord> findByadoptionId(String adoptionId);
+    Optional<AdoptionRecord> findByanimalId(String animalId);
 
-    boolean existsByadoptionId(UUID adoptionId);
-    boolean existsByanimalId(UUID animalId);
+    boolean existsByadoptionId(String adoptionId);
+    boolean existsByanimalId(String animalId);
 
-    void deleteByadoptionId(UUID adoptionId);
+    void deleteByadoptionId(String adoptionId);
 }

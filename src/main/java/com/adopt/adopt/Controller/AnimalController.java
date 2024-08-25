@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/animals")
@@ -16,7 +15,7 @@ public class AnimalController {
     @Autowired
     private AnimalService animalService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Animal>> getAllAnimals() {
         return new ResponseEntity<List<Animal>>(
                 animalService.findAll(),
@@ -25,14 +24,14 @@ public class AnimalController {
     }
 
     @GetMapping("/{animalId}")
-    public ResponseEntity<Animal> findSingleAnimal(@PathVariable UUID animalId) {
+    public ResponseEntity<Animal> findSingleAnimal(@PathVariable String animalId) {
         return new ResponseEntity<Animal>(
                 animalService.findOne(animalId),
                 HttpStatus.OK
         );
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Animal> createAnimal(@RequestBody Animal payload) {
         return new ResponseEntity<Animal>(
                 animalService.createAnimal(
@@ -48,10 +47,13 @@ public class AnimalController {
     }
 
     @PutMapping("/{animalId}")
-    public ResponseEntity<Animal> updateAnimal(@RequestBody Animal payload) {
+    public ResponseEntity<Animal> updateAnimal(
+            @PathVariable String animalId,
+            @RequestBody Animal payload
+    ) {
         return new ResponseEntity<Animal>(
                 animalService.updateAnimal(
-                        payload.getAnimalId(),
+                        animalId,
                         payload.getName(),
                         payload.getType(),
                         payload.getSize(),
@@ -64,7 +66,7 @@ public class AnimalController {
     }
 
     @DeleteMapping("/{animalId}")
-    public ResponseEntity<Animal> deleteAnimal(@PathVariable UUID animalId) {
+    public ResponseEntity<Animal> deleteAnimal(@PathVariable String animalId) {
         return new ResponseEntity<Animal>(
                 animalService.deleteAnimal(animalId),
                 HttpStatus.NO_CONTENT

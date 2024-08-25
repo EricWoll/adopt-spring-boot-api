@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 
 @RestController
@@ -18,7 +17,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<List<User>>(
                 userService.findAll(),
@@ -27,14 +26,14 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> findSingleUser(@PathVariable UUID userId) {
+    public ResponseEntity<User> findSingleUser(@PathVariable String userId) {
         return new ResponseEntity<User>(
                 userService.findOne(userId),
                 HttpStatus.OK
         );
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User payload) {
         return new ResponseEntity<User>(
                 userService.createUser(
@@ -48,12 +47,12 @@ public class UserController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(
-            @PathVariable UUID userId,
+            @PathVariable String userId,
             @RequestBody User payload
     ) {
         return new ResponseEntity<User>(
                 userService.updateUser(
-                        payload.getUserId(),
+                        userId,
                         payload.getUsername(),
                         payload.getEmail(),
                         payload.getPassword()
@@ -63,7 +62,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<User> deleteUser(@PathVariable UUID userId) {
+    public ResponseEntity<User> deleteUser(@PathVariable String userId) {
         return new ResponseEntity<User>(
                 userService.deleteUser(userId),
                 HttpStatus.NO_CONTENT

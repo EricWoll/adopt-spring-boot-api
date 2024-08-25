@@ -1,26 +1,23 @@
 package com.adopt.adopt.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.UUID;
 
-@Entity(name = "User")
 @Data
 @NoArgsConstructor
 @Document(collection = "users")
 public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID userId;
+    @MongoId
+    private ObjectId id;
+    private String userId;
     @NotBlank
     @Size(min=6, max=30)
     private String username;
@@ -38,8 +35,10 @@ public class User {
             String password,
             ERole role
     ) {
+        this.userId = UUID.randomUUID().toString();
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 }

@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminController {
@@ -16,7 +14,7 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User payload) {
         return new ResponseEntity<User>(
                 adminService.createUser(
@@ -31,7 +29,7 @@ public class AdminController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<User> updateUser(
-            @PathVariable UUID userId,
+            @PathVariable String userId,
             @RequestBody User payload
     ) {
         return new ResponseEntity<User>(
@@ -47,7 +45,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<User> deleteUser(@PathVariable UUID userId) {
+    public ResponseEntity<User> deleteUser(@PathVariable String userId) {
         return new ResponseEntity<User>(
                 adminService.deleteUser(userId),
                 HttpStatus.NO_CONTENT

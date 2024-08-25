@@ -5,14 +5,13 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface AnimalRepo extends MongoRepository<Animal, String> {
 
-    Optional<Animal> findByanimalId(UUID animalId);
+    Optional<Animal> findByanimalId(String animalId);
 
-    boolean existsByanimalId(UUID animalId);
+    boolean existsByanimalId(String animalId);
 
-    void deleteByanimalId(UUID animalId);
+    void deleteByanimalId(String animalId);
 }

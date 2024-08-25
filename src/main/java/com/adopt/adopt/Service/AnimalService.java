@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class AnimalService {
@@ -19,7 +18,7 @@ public class AnimalService {
         return animalRepo.findAll();
     }
 
-    public Animal findOne(UUID animalId) {
+    public Animal findOne(String animalId) {
         return animalRepo.findByanimalId(animalId)
                 .orElseThrow(()-> new AnimalNotFoundException("Animal Does Not Exist!"));
     }
@@ -45,7 +44,7 @@ public class AnimalService {
     }
 
     public Animal updateAnimal(
-            UUID animalId,
+            String animalId,
             String name,
             String type,
             String size,
@@ -67,7 +66,7 @@ public class AnimalService {
         return animal;
     }
 
-    public Animal deleteAnimal(UUID animalId) {
+    public Animal deleteAnimal(String animalId) {
         Animal animal = animalRepo.findByanimalId(animalId)
                 .orElseThrow(()-> new AnimalNotFoundException("Animal Record Not Found!"));
 

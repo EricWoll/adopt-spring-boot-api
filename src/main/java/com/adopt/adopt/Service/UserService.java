@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 
 @Service
@@ -22,7 +21,7 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public User findOne(UUID userId) {
+    public User findOne(String userId) {
         return userRepo.findByuserId(userId)
                 .orElseThrow(()-> new UserNotFoundException("User Does Not Exist!"));
     }
@@ -52,7 +51,7 @@ public class UserService {
     }
 
     public User updateUser(
-            UUID userId,
+            String userId,
             String username,
             String email,
             String password
@@ -68,7 +67,7 @@ public class UserService {
         return user;
     }
 
-    public User deleteUser(UUID userId) {
+    public User deleteUser(String userId) {
         User user = userRepo.findByuserId(userId)
                 .orElseThrow(()-> new UserNotFoundException("User Does Not Exist!"));
 
