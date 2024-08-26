@@ -1,7 +1,5 @@
 package com.adopt.adopt.Security.Service;
 
-
-import com.adopt.adopt.Model.User;
 import com.adopt.adopt.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

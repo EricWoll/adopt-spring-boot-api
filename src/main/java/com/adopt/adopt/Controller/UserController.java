@@ -17,6 +17,11 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    // When returning an object to the user, make a custom "Model" to send back.
+    // This way you can avoid sending info you don't want to go to the user.
+
+
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return new ResponseEntity<List<User>>(
@@ -30,18 +35,6 @@ public class UserController {
         return new ResponseEntity<User>(
                 userService.findOne(userId),
                 HttpStatus.OK
-        );
-    }
-
-    @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User payload) {
-        return new ResponseEntity<User>(
-                userService.createUser(
-                        payload.getUsername(),
-                        payload.getEmail(),
-                        payload.getPassword()
-                ),
-                HttpStatus.CREATED
         );
     }
 

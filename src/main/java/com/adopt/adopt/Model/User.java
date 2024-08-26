@@ -28,7 +28,7 @@ public class User implements UserDetails {
     @Email
     private String email;
     @NotBlank
-//    @Size(min=8)
+    @Size(min=8)
     private String password;
     private ERole role;
 
