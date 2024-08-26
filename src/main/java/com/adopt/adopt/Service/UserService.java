@@ -33,11 +33,11 @@ public class UserService {
             String password
     ) {
 
-        boolean foundName = userRepo.existsByusername(username);
-        boolean foundEmail = userRepo.existsByemail(email);
-
-        if (foundName || foundEmail) {
-            throw new UserExistsException("User Already Exists!");
+        if (userRepo.existsByusername(username)) {
+            throw new UserExistsException("Username Already Exists!");
+        }
+        if (userRepo.existsByemail(email)) {
+            throw new UserExistsException("Email Already Exists!");
         }
 
         return userRepo.insert(
