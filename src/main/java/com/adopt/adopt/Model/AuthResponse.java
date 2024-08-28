@@ -7,8 +7,8 @@ import lombok.*;
 @Setter
 @Builder
 @NoArgsConstructor
-public class JwtAuthResponse {
+public class AuthResponse {
         private String accessToken;
-        private String tokenType;
-        private Long expiresIn;
+        private String refreshToken;
+        private String userId;
 }

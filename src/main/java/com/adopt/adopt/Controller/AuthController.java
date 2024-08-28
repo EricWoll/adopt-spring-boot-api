@@ -1,10 +1,10 @@
 package com.adopt.adopt.Controller;
 
-import com.adopt.adopt.Model.JwtAuthResponse;
+import com.adopt.adopt.Model.AuthResponse;
 import com.adopt.adopt.Model.User;
 import com.adopt.adopt.Service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,19 +19,19 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User payload) {
-        return new ResponseEntity<User>(
-                userService.createUser(
-                        payload.getUsername(),
-                        payload.getEmail(),
-                        payload.getPassword()
-                ),
-                HttpStatus.CREATED
-        );
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody User user) {
+        return  ResponseEntity.ok(userService.createUser(user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtAuthResponse> loginUser(@RequestBody User user) {
+    public ResponseEntity<AuthResponse> loginUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.login(user));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refreshUser(
+            HttpServletRequest request
+    ) {
+        return ResponseEntity.ok(userService.refreshJwtToken(request));
     }
 }

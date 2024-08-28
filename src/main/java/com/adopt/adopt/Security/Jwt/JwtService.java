@@ -1,17 +1,16 @@
 package com.adopt.adopt.Security.Jwt;
 
+import com.adopt.adopt.Model.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Service
@@ -21,25 +20,32 @@ public class JwtService {
     private String jwtSecret;
 
     @Value("${adopt.app.jwtExpireMs}")
-    private int jwtExpireMs;
+    private long jwtExpireMs;
 
-    public String generateJwtToken(String username, String password) {
+    @Value("${adopt.app.jwtRefreshExpireMs}")
+    private long jwtRefreshExpireMs;
 
-        Map<String, Object> claims = new HashMap<>();
+    public String generateJwtToken(User user) {
+        return buildToken(new HashMap<>(), user, jwtExpireMs);
+    }
 
+    public String generateJwtRefreshToken(User user) {
+        return buildToken(new HashMap<>(), user, jwtRefreshExpireMs);
+    }
+
+    private String buildToken(Map<String, Object> claims,
+                                 User user,
+                              long expiration
+    ) {
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(username)
+                .subject(user.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration((new Date(System.currentTimeMillis() + jwtExpireMs )))
+                .expiration((new Date(System.currentTimeMillis() + expiration )))
                 .and()
                 .signWith(getKey())
                 .compact();
-    }
-
-    public long getJwtExpirationDate() { //TODO: Remove conversion as it is in milliseconds
-        return TimeUnit.MILLISECONDS.toMillis(jwtExpireMs);
     }
 
     private Key getKey() {

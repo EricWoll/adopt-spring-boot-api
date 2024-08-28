@@ -12,6 +12,7 @@ import com.adopt.adopt.Repo.AdoptionRecordRepo;
 import com.adopt.adopt.Repo.AnimalRepo;
 import com.adopt.adopt.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,15 +25,12 @@ public class AdminService {
     @Autowired
     private AnimalRepo animalRepo;
 
+    private BCryptPasswordEncoder BcpEncoder =  new BCryptPasswordEncoder(10);
+
     // Creates For All User Types
-    public User createUser(
-            String username,
-            String email,
-            String password,
-            ERole role
-    ) {
-        boolean foundName = userRepo.existsByusername(username);
-        boolean foundEmail = userRepo.existsByemail(email);
+    public User createUser(User user) {
+        boolean foundName = userRepo.existsByusername(user.getUsername());
+        boolean foundEmail = userRepo.existsByemail(user.getEmail());
 
         if (foundName || foundEmail) {
             throw new UserExistsException("User Already Exists!");
@@ -40,32 +38,26 @@ public class AdminService {
 
         return userRepo.insert(
                 new User(
-                        username,
-                        email,
-                        password,
-                        role
+                        user.getUsername(),
+                        user.getEmail(),
+                        BcpEncoder.encode(user.getPassword()),
+                        user.getRole()
                 )
         );
     }
 
     // Updates For All User Types
-    public User updateUser(
-            String userId,
-            String username,
-            String email,
-            String password,
-            ERole role
-    ) {
-        User user = userRepo.findByuserId(userId)
+    public User updateUser(User user) {
+        User foundUser = userRepo.findByuserId(user.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User Does Not Exist!"));
 
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setRole(role);
+        foundUser.setUsername(user.getUsername());
+        foundUser.setEmail(user.getEmail());
+        foundUser.setPassword(BcpEncoder.encode(user.getPassword()));
+        foundUser.setRole(user.getRole());
 
-        userRepo.save(user);
-        return user;
+        userRepo.save(foundUser);
+        return foundUser;
     }
 
     // Deletes For All User Types

@@ -17,31 +17,17 @@ public class AdminController {
     private AdminService adminService;
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User payload) {
-        return new ResponseEntity<User>(
-                adminService.createUser(
-                        payload.getUsername(),
-                        payload.getEmail(),
-                        payload.getPassword(),
-                        payload.getRole()
-                ),
-                HttpStatus.CREATED
-        );
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        return ResponseEntity.ok(adminService.createUser(user));
     }
 
     @PutMapping("/users/{userId}")
     public ResponseEntity<User> updateUser(
             @PathVariable String userId,
-            @RequestBody User payload
+            @RequestBody User user
     ) {
         return new ResponseEntity<User>(
-                adminService.updateUser(
-                        userId,
-                        payload.getUsername(),
-                        payload.getEmail(),
-                        payload.getPassword(),
-                        payload.getRole()
-                ),
+                adminService.updateUser(user),
                 HttpStatus.CREATED
         );
     }

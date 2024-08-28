@@ -38,6 +38,7 @@ public class User implements UserDetails {
             String password,
             ERole role
     ) {
+        // Don't use an ID.... the username and email are always checked for uniqueness anyway
         this.userId = UUID.randomUUID().toString();
         this.username = username;
         this.email = email;
