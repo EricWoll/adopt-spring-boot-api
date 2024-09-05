@@ -1,5 +1,6 @@
 package com.adopt.adopt.Controller;
 
+import com.adopt.adopt.AWS.AwsService;
 import com.adopt.adopt.Model.User;
 import com.adopt.adopt.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@CrossOrigin("http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -20,7 +22,6 @@ public class UserController {
 
     // When returning an object to the user, make a custom "Model" to send back.
     // This way you can avoid sending info you don't want to go to the user.
-
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -46,9 +47,7 @@ public class UserController {
         return new ResponseEntity<User>(
                 userService.updateUser(
                         userId,
-                        payload.getUsername(),
-                        payload.getEmail(),
-                        payload.getPassword()
+                        payload
                 ),
                 HttpStatus.CREATED
         );

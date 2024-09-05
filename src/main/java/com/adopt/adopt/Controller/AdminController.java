@@ -27,7 +27,7 @@ public class AdminController {
             @RequestBody User user
     ) {
         return new ResponseEntity<User>(
-                adminService.updateUser(user),
+                adminService.updateUser(userId, user),
                 HttpStatus.CREATED
         );
     }

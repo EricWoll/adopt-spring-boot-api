@@ -12,6 +12,7 @@ import com.adopt.adopt.Repo.AdoptionRecordRepo;
 import com.adopt.adopt.Repo.AnimalRepo;
 import com.adopt.adopt.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,9 @@ public class AdminService {
     @Autowired
     private AnimalRepo animalRepo;
 
+    @Value("adopt.app.noImage")
+    private String noImageId;
+
     private BCryptPasswordEncoder BcpEncoder =  new BCryptPasswordEncoder(10);
 
     // Creates For All User Types
@@ -36,25 +40,31 @@ public class AdminService {
             throw new UserExistsException("User Already Exists!");
         }
 
+        if (user.getImageId() == null) {
+            user.setImageId(noImageId);
+        }
+
         return userRepo.insert(
                 new User(
                         user.getUsername(),
                         user.getEmail(),
                         BcpEncoder.encode(user.getPassword()),
-                        user.getRole()
+                        user.getRole(),
+                        user.getImageId()
                 )
         );
     }
 
     // Updates For All User Types
-    public User updateUser(User user) {
-        User foundUser = userRepo.findByuserId(user.getUserId())
+    public User updateUser(String userId, User user) {
+        User foundUser = userRepo.findByuserId(userId)
                 .orElseThrow(() -> new UserNotFoundException("User Does Not Exist!"));
 
         foundUser.setUsername(user.getUsername());
         foundUser.setEmail(user.getEmail());
         foundUser.setPassword(BcpEncoder.encode(user.getPassword()));
         foundUser.setRole(user.getRole());
+        foundUser.setImageId(user.getImageId());
 
         userRepo.save(foundUser);
         return foundUser;

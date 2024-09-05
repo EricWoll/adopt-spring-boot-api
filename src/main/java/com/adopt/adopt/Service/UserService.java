@@ -9,6 +9,7 @@ import com.adopt.adopt.Repo.UserRepo;
 import com.adopt.adopt.Security.Jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,9 @@ public class UserService {
 
     @Autowired
     private JwtService jwtService;
+
+    @Value("adopt.app.noImage")
+    private String noImageId;
 
     @Autowired
     private AuthenticationManager authManager;
@@ -53,33 +57,34 @@ public class UserService {
             throw new UserExistsException("Email Already Exists!");
         }
 
+        if (user.getImageId() == null) {
+            user.setImageId(noImageId);
+        }
+
         User createdUser = userRepo.insert(
             new User(
                 user.getUsername(),
                 user.getEmail(),
                 BcpEncoder.encode(user.getPassword()),
-                ERole.CUSTOMER
+                ERole.CUSTOMER,
+                user.getImageId()
             )
         );
 
         return JwtToken(createdUser);
     }
 
-    public User updateUser(
-            String userId,
-            String username,
-            String email,
-            String password
-    ) {
-        User user = userRepo.findByuserId(userId)
+    public User updateUser(String userId, User user) {
+        User foundUser = userRepo.findByuserId(userId)
                 .orElseThrow(() -> new UserNotFoundException("User Does Not Exist!"));
 
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(BcpEncoder.encode(password));
+        foundUser.setUsername(user.getUsername());
+        foundUser.setEmail(user.getEmail());
+        foundUser.setPassword(BcpEncoder.encode(user.getPassword()));
+        foundUser.setImageId(user.getImageId());
 
-        userRepo.save(user);
-        return user;
+        userRepo.save(foundUser);
+        return foundUser;
     }
 
     public User deleteUser(String userId) {
@@ -116,7 +121,10 @@ public class UserService {
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .username(user.getUsername())
+                .email(user.getEmail())
                 .userId(user.getUserId())
+                .role(user.getRole())
                 .build();
     }
 
@@ -138,7 +146,10 @@ public class UserService {
                  return AuthResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
+                         .username(user.getUsername())
+                         .email(user.getEmail())
                          .userId(user.getUserId())
+                         .role(user.getRole())
                         .build();
             }
         }
