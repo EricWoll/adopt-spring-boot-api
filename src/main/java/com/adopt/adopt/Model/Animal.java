@@ -1,6 +1,6 @@
-package com.adopt.adopt.Animals;
+package com.adopt.adopt.Model;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
@@ -8,38 +8,38 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.List;
+import java.util.UUID;
 
-@Document(collection = "animals")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@Document(collection = "animals")
 public class Animal {
     @MongoId
     private ObjectId id;
     private String animalId;
+    @NotBlank
     private String name;
+    @NotBlank
     private String type;
     private String size;
     private String weight;
-    private boolean hasChip;
     private List<String> medications;
+    private boolean hasChip;
 
-
-    public Animal (
-            String animalId,
+    public Animal(
             String name,
             String type,
             String size,
             String weight,
-            boolean hasChip,
-            List<String> medications
-    ){
-        this.animalId = animalId;
+            List<String> medications,
+            boolean hasChip
+    ) {
+        this.animalId = UUID.randomUUID().toString();
         this.name = name;
         this.type = type;
         this.size = size;
         this.weight = weight;
-        this.hasChip = hasChip;
         this.medications = medications;
+        this.hasChip = hasChip;
     }
 }

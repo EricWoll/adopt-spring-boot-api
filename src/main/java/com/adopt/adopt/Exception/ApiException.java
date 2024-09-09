@@ -1,4 +1,4 @@
-package com.adopt.adopt.Exceptions;
+package com.adopt.adopt.Exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 public class ApiException {
 
     private final String message;
-    private final Throwable throwable;
     private final HttpStatus httpStatus;
     private final ZonedDateTime timeStamp;
 }
