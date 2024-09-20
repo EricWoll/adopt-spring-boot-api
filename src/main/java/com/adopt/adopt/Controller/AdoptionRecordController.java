@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/adoption-records")
@@ -25,9 +26,17 @@ public class AdoptionRecordController {
     }
 
     @GetMapping("/{adoptionId}")
-    public ResponseEntity<AdoptionRecord> getSingleAdoptionRecord(@PathVariable String adoptionId) {
+    public ResponseEntity<AdoptionRecord> getSingleAdoptionRecordById(@PathVariable String adoptionId) {
         return new ResponseEntity<AdoptionRecord>(
-                adoptionRecordService.findOne(adoptionId),
+                adoptionRecordService.findOneById(adoptionId),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<AdoptionRecord>> getAllAdoptionRecordsByUser(@PathVariable String userId) {
+        return new ResponseEntity<List<AdoptionRecord>>(
+                adoptionRecordService.findByUser(userId),
                 HttpStatus.OK
         );
     }

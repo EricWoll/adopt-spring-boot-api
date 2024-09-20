@@ -25,6 +25,7 @@ public class Animal {
     private String weight;
     private List<String> medications;
     private boolean hasChip;
+    private String imageId;
 
     public Animal(
             String name,
@@ -32,7 +33,8 @@ public class Animal {
             String size,
             String weight,
             List<String> medications,
-            boolean hasChip
+            boolean hasChip,
+            String imageId
     ) {
         this.animalId = UUID.randomUUID().toString();
         this.name = name;
@@ -41,5 +43,6 @@ public class Animal {
         this.weight = weight;
         this.medications = medications;
         this.hasChip = hasChip;
+        this.imageId = imageId;
     }
 }

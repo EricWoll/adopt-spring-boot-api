@@ -14,4 +14,5 @@ public class AuthResponse {
         private String email;
         private String userId;
         private ERole role;
+        private String imageId;
 }

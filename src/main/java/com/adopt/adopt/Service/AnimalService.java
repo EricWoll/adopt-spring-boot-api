@@ -4,6 +4,7 @@ import com.adopt.adopt.Exception.CustomExceptions.AnimalNotFoundException;
 import com.adopt.adopt.Model.Animal;
 import com.adopt.adopt.Repo.AnimalRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public class AnimalService {
     @Autowired
     private AnimalRepo animalRepo;
 
+    @Value("adopt.app.noImage")
+    private String noImageId;
+
     public List<Animal> findAll() {
         return animalRepo.findAll();
     }
@@ -23,47 +27,40 @@ public class AnimalService {
                 .orElseThrow(()-> new AnimalNotFoundException("Animal Does Not Exist!"));
     }
 
-    public Animal createAnimal(
-            String name,
-            String type,
-            String size,
-            String weight,
-            List<String> medications,
-            boolean hasChip
+    public Animal createAnimal(Animal animal
     ) {
+        if (animal.getImageId() == null) {
+            animal.setImageId(noImageId);
+        }
+
         return animalRepo.insert(
                 new Animal(
-                        name,
-                        type,
-                        size,
-                        weight,
-                        medications,
-                        hasChip
+                        animal.getName(),
+                        animal.getType(),
+                        animal.getSize(),
+                        animal.getWeight(),
+                        animal.getMedications(),
+                        animal.isHasChip(),
+                        animal.getImageId()
                 )
         );
     }
 
-    public Animal updateAnimal(
-            String animalId,
-            String name,
-            String type,
-            String size,
-            String weight,
-            List<String> medications,
-            boolean hasChip
+    public Animal updateAnimal(String animalId, Animal animal
     ) {
-        Animal animal = animalRepo.findByanimalId(animalId)
+        Animal foundAnimal = animalRepo.findByanimalId(animalId)
                 .orElseThrow(()-> new AnimalNotFoundException("Animal Record Not Found!"));
 
-        animal.setName(name);
-        animal.setType(type);
-        animal.setSize(size);
-        animal.setWeight(weight);
-        animal.setMedications(medications);
-        animal.setHasChip(hasChip);
+        foundAnimal.setName(animal.getName());
+        foundAnimal.setType(animal.getSize());
+        foundAnimal.setSize(animal.getSize());
+        foundAnimal.setWeight(animal.getWeight());
+        foundAnimal.setMedications(animal.getMedications());
+        foundAnimal.setHasChip(animal.isHasChip());
+        foundAnimal.setImageId(animal.getImageId());
 
-        animalRepo.save(animal);
-        return animal;
+        animalRepo.save(foundAnimal);
+        return foundAnimal;
     }
 
     public Animal deleteAnimal(String animalId) {
