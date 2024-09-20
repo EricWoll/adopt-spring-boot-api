@@ -35,12 +35,7 @@ public class AnimalController {
     public ResponseEntity<Animal> createAnimal(@RequestBody Animal payload) {
         return new ResponseEntity<Animal>(
                 animalService.createAnimal(
-                        payload.getName(),
-                        payload.getType(),
-                        payload.getSize(),
-                        payload.getWeight(),
-                        payload.getMedications(),
-                        payload.isHasChip()
+                        payload
                 ),
                 HttpStatus.CREATED
         );
@@ -54,12 +49,7 @@ public class AnimalController {
         return new ResponseEntity<Animal>(
                 animalService.updateAnimal(
                         animalId,
-                        payload.getName(),
-                        payload.getType(),
-                        payload.getSize(),
-                        payload.getWeight(),
-                        payload.getMedications(),
-                        payload.isHasChip()
+                        payload
                 ),
                 HttpStatus.CREATED
         );

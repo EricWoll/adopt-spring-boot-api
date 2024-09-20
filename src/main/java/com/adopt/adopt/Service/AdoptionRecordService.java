@@ -31,10 +31,19 @@ public class AdoptionRecordService {
         return adoptionRecordRepo.findAll();
     }
 
-    public AdoptionRecord findOne(String adoptionId) {
+    public List<AdoptionRecord> findByUser(String userId) {
+        if (!userRepo.existsByuserId(userId)) {
+            throw new UserNotFoundException("User does not exist!");
+        }
+
+        return adoptionRecordRepo.findAllByuserId(userId);
+    }
+
+    public AdoptionRecord findOneById(String adoptionId) {
         return adoptionRecordRepo.findByadoptionId(adoptionId)
                 .orElseThrow(()-> new AdoptionRecordNotFoundException("Adoption Record Does Not Exist!"));
     }
+
 
     public AdoptionRecord createAdoptionRecord(
             String animalId,
